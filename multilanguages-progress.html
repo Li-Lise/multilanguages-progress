@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>multilanguages-progress</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --surface: #131929;
+    --border: #1e2d45;
+    --accent-green: #39e07a;
+    --accent-cyan: #00d4ff;
+    --accent-gold: #f5c842;
+    --accent-rose: #ff6b9d;
+    --accent-lavender: #b57bff;
+    --text: #e8edf5;
+    --muted: #5a6a82;
+    --card: #0f1823;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 56px;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--text);
+  }
+
+  .header-left h1 span {
+    color: var(--accent-green);
+  }
+
+  .header-left .subtitle {
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(57,224,122,0.08);
+    border: 1px solid rgba(57,224,122,0.25);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    color: var(--accent-green);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+
+  .badge::before {
+    content: '●';
+    animation: pulse 1.8s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* META INFO */
+  .meta-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .meta-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .meta-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .meta-card.green::after { background: var(--accent-green); }
+  .meta-card.cyan::after { background: var(--accent-cyan); }
+  .meta-card.gold::after { background: var(--accent-gold); }
+  .meta-card.lavender::after { background: var(--accent-lavender); }
+
+  .meta-card .label {
+    font-size: 0.68rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+  }
+
+  .meta-card .value {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* WEEKLY SCHEDULE GRID */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .day-card:hover {
+    border-color: var(--muted);
+    transform: translateY(-2px);
+  }
+
+  .day-card.today {
+    border-color: rgba(57,224,122,0.4);
+    background: rgba(57,224,122,0.03);
+  }
+
+  .day-card.today::before {
+    content: 'AUJOURD\'HUI';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--accent-green);
+    background: rgba(57,224,122,0.1);
+    border: 1px solid rgba(57,224,122,0.2);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  .day-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .day-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .day-num {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .lang-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .lang-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+  }
+
+  .lang-flag { font-size: 1.2rem; line-height: 1; }
+
+  .lang-info { flex: 1; }
+
+  .lang-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .lang-native {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .progress-ring {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .progress-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .progress-ring circle.track {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 2.5;
+  }
+
+  .progress-ring circle.fill {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease;
+  }
+
+  .progress-ring .pct {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* LANGUAGE SUMMARY TABLE */
+  .lang-table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    text-align: left;
+  }
+
+  td {
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  tr:hover td { background: rgba(255,255,255,0.015); }
+
+  .dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  .days-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .day-chip {
+    font-size: 0.62rem;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .day-chip.active {
+    background: rgba(57,224,122,0.08);
+    border-color: rgba(57,224,122,0.25);
+    color: var(--accent-green);
+  }
+
+  /* SESSION LOG */
+  .log-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 48px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .log-entry {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    align-items: center;
+    font-size: 0.75rem;
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+
+  .log-date { color: var(--muted); }
+
+  .log-lang { color: var(--text); }
+
+  .log-lang .pair-flags { font-size: 1rem; }
+
+  .log-status {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .log-status.done {
+    background: rgba(57,224,122,0.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(57,224,122,0.2);
+  }
+
+  .log-status.pending {
+    background: rgba(245,200,66,0.08);
+    color: var(--accent-gold);
+    border: 1px solid rgba(245,200,66,0.2);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  footer strong { color: var(--accent-green); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .day-card { animation: fadeUp 0.5s ease both; }
+  .day-card:nth-child(1) { animation-delay: 0.05s; }
+  .day-card:nth-child(2) { animation-delay: 0.10s; }
+  .day-card:nth-child(3) { animation-delay: 0.15s; }
+  .day-card:nth-child(4) { animation-delay: 0.20s; }
+  .day-card:nth-child(5) { animation-delay: 0.25s; }
+  .day-card:nth-child(6) { animation-delay: 0.30s; }
+  .day-card:nth-child(7) { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1>multilanguages-<span>progress</span></h1>
+      <p class="subtitle">Suivi hebdomadaire · FullyFluent app</p>
+      <div class="badge">FullyFluent app · 9 langues en rotation</div>
+    </div>
+  </header>
+
+  <!-- META CARDS -->
+  <div class="meta-row">
+    <div class="meta-card green">
+      <div class="label">Langues en cours</div>
+      <div class="value">9 langues</div>
+    </div>
+    <div class="meta-card cyan">
+      <div class="label">Sessions / semaine</div>
+      <div class="value">14 sessions</div>
+    </div>
+    <div class="meta-card gold">
+      <div class="label">App</div>
+      <div class="value">FullyFluent</div>
+    </div>
+    <div class="meta-card lavender">
+      <div class="label">Démarrage</div>
+      <div class="value">Avril 2026</div>
+    </div>
+  </div>
+
+  <!-- WEEKLY SCHEDULE -->
+  <div class="section-title">Planning hebdomadaire</div>
+  <div class="week-grid">
+
+    <!-- LUNDI -->
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-name">Lundi</span>
+        <span class="day-num">Jour 1</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇩🇪</span>
+          <div class="lang-info">
+            <div class="lang-name">Deutsch</div>
+            <div class="lang-native">Allemand</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#f5c842"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="30"/>
+            </svg>
+            <div class="pct">60%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇮🇹</span>
+          <div class="lang-info">
+            <div class="lang-name">Italiano</div>
+            <div class="lang-native">Italien</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#ff6b9d"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="38"/>
+            </svg>
+            <div class="pct">50%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARDI -->
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-name">Mardi</span>
+        <span class="day-num">Jour 2</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇪🇸</span>
+          <div class="lang-info">
+            <div class="lang-name">Español</div>
+            <div class="lang-native">Espagnol</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#39e07a"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="8"/>
+            </svg>
+            <div class="pct">90%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇺🇸</span>
+          <div class="lang-info">
+            <div class="lang-name">English</div>
+            <div class="lang-native">Anglais</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#00d4ff"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="8"/>
+            </svg>
+            <div class="pct">90%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MERCREDI -->
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-name">Mercredi</span>
+        <span class="day-num">Jour 3</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇯🇵</span>
+          <div class="lang-info">
+            <div class="lang-name">日本語</div>
+            <div class="lang-native">Japonais</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#ff6b9d"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="53"/>
+            </svg>
+            <div class="pct">30%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇵🇹</span>
+          <div class="lang-info">
+            <div class="lang-name">Português</div>
+            <div class="lang-native">Portugais (PT)</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#39e07a"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="23"/>
+            </svg>
+            <div class="pct">70%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JEUDI -->
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-name">Jeudi</span>
+        <span class="day-num">Jour 4</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇨🇳</span>
+          <div class="lang-info">
+            <div class="lang-name">中文</div>
+            <div class="lang-native">Chinois</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#f5c842"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="60"/>
+            </svg>
+            <div class="pct">20%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇮🇳</span>
+          <div class="lang-info">
+            <div class="lang-name">हिन्दी</div>
+            <div class="lang-native">Hindi</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#b57bff"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="53"/>
+            </svg>
+            <div class="pct">30%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VENDREDI -->
+    <div class="day-card today">
+      <div class="day-header">
+        <span class="day-name">Vendredi</span>
+        <span class="day-num">Jour 5</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇷🇺</span>
+          <div class="lang-info">
+            <div class="lang-name">Русский</div>
+            <div class="lang-native">Russe</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#00d4ff"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="60"/>
+            </svg>
+            <div class="pct">20%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇮🇳</span>
+          <div class="lang-info">
+            <div class="lang-name">हिन्दी</div>
+            <div class="lang-native">Hindi</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#b57bff"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="53"/>
+            </svg>
+            <div class="pct">30%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAMEDI -->
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-name">Samedi</span>
+        <span class="day-num">Jour 6</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇵🇹</span>
+          <div class="lang-info">
+            <div class="lang-name">Português</div>
+            <div class="lang-native">Portugais (PT)</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#39e07a"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="23"/>
+            </svg>
+            <div class="pct">70%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇮🇳</span>
+          <div class="lang-info">
+            <div class="lang-name">हिन्दी</div>
+            <div class="lang-native">Hindi</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#b57bff"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="53"/>
+            </svg>
+            <div class="pct">30%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIMANCHE -->
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-name">Dimanche</span>
+        <span class="day-num">Jour 7</span>
+      </div>
+      <div class="lang-pair">
+        <div class="lang-item">
+          <span class="lang-flag">🇯🇵</span>
+          <div class="lang-info">
+            <div class="lang-name">日本語</div>
+            <div class="lang-native">Japonais</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#ff6b9d"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="53"/>
+            </svg>
+            <div class="pct">30%</div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span class="lang-flag">🇮🇳</span>
+          <div class="lang-info">
+            <div class="lang-name">हिन्दी</div>
+            <div class="lang-native">Hindi</div>
+          </div>
+          <div class="progress-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="track" cx="16" cy="16" r="12"/>
+              <circle class="fill" cx="16" cy="16" r="12"
+                stroke="#b57bff"
+                stroke-dasharray="75.4"
+                stroke-dashoffset="53"/>
+            </svg>
+            <div class="pct">30%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LANGUAGE SUMMARY TABLE -->
+  <div class="section-title">Vue par langue</div>
+  <div class="lang-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Langue</th>
+          <th>Jours actifs</th>
+          <th>Sessions/sem.</th>
+          <th>Niveau estimé</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🇺🇸 <strong>English</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip">Ma</span><span class="day-chip active">Me</span><span class="day-chip">J</span><span class="day-chip">V</span><span class="day-chip">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-cyan)">1×</span></td>
+          <td><span class="dot" style="background:var(--accent-green)"></span>Avancé (C1+)</td>
+        </tr>
+        <tr>
+          <td>🇪🇸 <strong>Español</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip active">Ma</span><span class="day-chip">Me</span><span class="day-chip">J</span><span class="day-chip">V</span><span class="day-chip">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-green)">1×</span></td>
+          <td><span class="dot" style="background:var(--accent-green)"></span>Avancé (B2+)</td>
+        </tr>
+        <tr>
+          <td>🇵🇹 <strong>Português</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip">Ma</span><span class="day-chip active">Me</span><span class="day-chip">J</span><span class="day-chip">V</span><span class="day-chip active">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-cyan)">2×</span></td>
+          <td><span class="dot" style="background:var(--accent-cyan)"></span>Intermédiaire (B1)</td>
+        </tr>
+        <tr>
+          <td>🇩🇪 <strong>Deutsch</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip active">L</span><span class="day-chip">Ma</span><span class="day-chip">Me</span><span class="day-chip">J</span><span class="day-chip">V</span><span class="day-chip">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-gold)">1×</span></td>
+          <td><span class="dot" style="background:var(--accent-gold)"></span>Intermédiaire (A2–B1)</td>
+        </tr>
+        <tr>
+          <td>🇮🇹 <strong>Italiano</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip active">L</span><span class="day-chip">Ma</span><span class="day-chip">Me</span><span class="day-chip">J</span><span class="day-chip">V</span><span class="day-chip">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-rose)">1×</span></td>
+          <td><span class="dot" style="background:var(--accent-rose)"></span>Intermédiaire (A2–B1)</td>
+        </tr>
+        <tr>
+          <td>🇮🇳 <strong>हिन्दी</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip">Ma</span><span class="day-chip">Me</span><span class="day-chip active">J</span><span class="day-chip active">V</span><span class="day-chip active">S</span><span class="day-chip active">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-lavender)">4×</span></td>
+          <td><span class="dot" style="background:var(--accent-lavender)"></span>Débutant (A1)</td>
+        </tr>
+        <tr>
+          <td>🇯🇵 <strong>日本語</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip">Ma</span><span class="day-chip active">Me</span><span class="day-chip">J</span><span class="day-chip">V</span><span class="day-chip">S</span><span class="day-chip active">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-rose)">2×</span></td>
+          <td><span class="dot" style="background:var(--accent-rose)"></span>Débutant (A1)</td>
+        </tr>
+        <tr>
+          <td>🇨🇳 <strong>中文</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip">Ma</span><span class="day-chip">Me</span><span class="day-chip active">J</span><span class="day-chip">V</span><span class="day-chip">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-gold)">1×</span></td>
+          <td><span class="dot" style="background:var(--accent-gold)"></span>Débutant (A1)</td>
+        </tr>
+        <tr>
+          <td>🇷🇺 <strong>Русский</strong></td>
+          <td>
+            <div class="days-list">
+              <span class="day-chip">L</span><span class="day-chip">Ma</span><span class="day-chip">Me</span><span class="day-chip">J</span><span class="day-chip active">V</span><span class="day-chip">S</span><span class="day-chip">D</span>
+            </div>
+          </td>
+          <td><span style="color:var(--accent-cyan)">1×</span></td>
+          <td><span class="dot" style="background:var(--accent-cyan)"></span>Débutant (A1)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SESSION LOG -->
+  <div class="section-title">Journal des sessions — Semaine 1</div>
+  <div class="log-wrap">
+    <div class="log-entry">
+      <span class="log-date">Lun 07/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇩🇪🇮🇹</span> Deutsch + Italiano</span>
+      <span class="log-status done">FAIT</span>
+    </div>
+    <div class="log-entry">
+      <span class="log-date">Mar 08/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇪🇸🇺🇸</span> Español + English</span>
+      <span class="log-status done">FAIT</span>
+    </div>
+    <div class="log-entry">
+      <span class="log-date">Mer 09/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇯🇵🇵🇹</span> 日本語 + Português</span>
+      <span class="log-status done">FAIT</span>
+    </div>
+    <div class="log-entry">
+      <span class="log-date">Jeu 10/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇨🇳🇮🇳</span> 中文 + हिन्दी</span>
+      <span class="log-status done">FAIT</span>
+    </div>
+    <div class="log-entry">
+      <span class="log-date">Ven 11/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇷🇺🇮🇳</span> Русский + हिन्दी</span>
+      <span class="log-status pending">EN COURS</span>
+    </div>
+    <div class="log-entry">
+      <span class="log-date">Sam 12/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇵🇹🇮🇳</span> Português + हिन्दी</span>
+      <span class="log-status pending">À VENIR</span>
+    </div>
+    <div class="log-entry">
+      <span class="log-date">Dim 13/04/2026</span>
+      <span class="log-lang"><span class="pair-flags">🇯🇵🇮🇳</span> 日本語 + हिन्दी</span>
+      <span class="log-status pending">À VENIR</span>
+    </div>
+  </div>
+
+  <footer>
+    <strong>Li-Lise</strong> · multilanguages-progress · Démarré avril 2026 ·
+    <span style="color:var(--muted)">github.com/Li-Lise</span>
+  </footer>
+
+</div>
+</body>
+</html>
